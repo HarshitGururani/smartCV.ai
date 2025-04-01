@@ -31,7 +31,6 @@ const page = () => {
         </div>
 
         <div className="w-full max-w-5xl relative mx-auto px-4 md:px-6 lg:px-8">
-          <div className="absolute top-10 left-1/2 transform -translate-x-1/2 w-full h-[400px] bg-gradient-to-r from-primary to-blue-500 rounded-full blur-3xl opacity-40 z-0" />
           <div className="w-full h-[400px] md:h-[500px] lg:h-[600px] rounded-xl shadow-lg bg-background">
             <div className="relative w-full h-full rounded-md">
               <Image

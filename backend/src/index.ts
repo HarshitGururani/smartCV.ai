@@ -10,7 +10,7 @@ app.use(express.json()); // Parse JSON request body
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded body (optional)
 const allowedOrigins = [
   "http://localhost:3000", // Local frontend
-  "https://smart-cv-ai-pi.vercel.app", // Production frontend
+  "https://smartcvai-production.up.railway.app", // Production frontend
 ];
 
 app.use(

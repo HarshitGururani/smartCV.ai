@@ -1,0 +1,103 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// prisma/schema.prisma
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Status {
+  ARCHIVED
+  PRIVATE
+  PUBLIC
+}
+
+model Document {
+  id              Int      @id @default(autoincrement())
+  documentId      String   @unique @map("document_id")
+  userId          String   @map("user_id")
+  title           String   @db.VarChar(255)
+  summary         String?
+  themeColor      String   @default("#7c3aed") @map("theme_color")
+  thumbnail       String?
+  currentPosition Int      @default(1) @map("current_position")
+  status          Status   @default(PRIVATE)
+  authorName      String   @map("author_name") @db.VarChar(255)
+  authorEmail     String   @map("author_email") @db.VarChar(255)
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  personalInfo PersonalInfo?
+  experiences  Experience[]
+  educations   Education[]
+  skills       Skill[]
+
+  @@map("document")
+}
+
+model PersonalInfo {
+  id        Int     @id @default(autoincrement())
+  docId     Int     @unique @map("document_id")
+  firstName String? @map("first_name") @db.VarChar(255)
+  lastName  String? @map("last_name") @db.VarChar(255)
+  jobTitle  String? @map("job_title") @db.VarChar(255)
+  address   String? @db.VarChar(500)
+  phone     String? @db.VarChar(50)
+  email     String? @db.VarChar(255)
+
+  document Document @relation(fields: [docId], references: [id], onDelete: Cascade)
+
+  @@map("personal_info")
+}
+
+model Experience {
+  id               Int       @id @default(autoincrement())
+  docId            Int       @map("document_id")
+  title            String?   @db.VarChar(255)
+  companyName      String?   @map("company_name") @db.VarChar(255)
+  city             String?   @db.VarChar(255)
+  state            String?   @db.VarChar(255)
+  currentlyWorking Boolean   @default(false) @map("currently_working")
+  workSummary      String?   @map("work_summary") @db.Text
+  startDate        DateTime? @map("start_date") @db.Date
+  endDate          DateTime? @map("end_date") @db.Date
+
+  document Document @relation(fields: [docId], references: [id], onDelete: Cascade)
+
+  @@map("experience")
+}
+
+model Education {
+  id                Int       @id @default(autoincrement())
+  docId             Int       @map("document_id")
+  universityName    String?   @map("university_name") @db.VarChar(255)
+  degree            String?   @db.VarChar(255)
+  major             String?   @db.VarChar(255)
+  description       String?
+  startDate         DateTime? @map("start_date") @db.Date
+  endDate           DateTime? @map("end_date") @db.Date
+  currentlyPursuing Boolean?  @default(false) @map("currently_pursuing")
+
+  document Document @relation(fields: [docId], references: [id], onDelete: Cascade)
+
+  @@map("education")
+}
+
+model Skill {
+  id     Int     @id @default(autoincrement())
+  docId  Int     @map("document_id")
+  name   String? @db.VarChar(255)
+  rating Int     @default(0)
+
+  document Document @relation(fields: [docId], references: [id], onDelete: Cascade)
+
+  @@map("skills")
+}

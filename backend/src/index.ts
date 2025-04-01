@@ -13,7 +13,7 @@ import documentRoute from "./routes/document";
 const app = express();
 const allowedOrigins = [
   "http://localhost:3000", // Local frontend
-  "https://your-production-frontend.com", // Production frontend
+  "https://smart-cv-ai-pi.vercel.app/", // Production frontend
 ];
 
 app.use(express.json()); // Parse JSON request body

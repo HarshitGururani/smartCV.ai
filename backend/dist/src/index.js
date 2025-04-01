@@ -12,7 +12,7 @@ const document_1 = __importDefault(require("./routes/document"));
 const app = (0, express_1.default)();
 const allowedOrigins = [
     "http://localhost:3000", // Local frontend
-    "https://your-production-frontend.com", // Production frontend
+    "https://smart-cv-ai-pi.vercel.app", // Production frontend
 ];
 app.use(express_1.default.json()); // Parse JSON request body
 app.use(express_1.default.urlencoded({ extended: true })); // Parse URL-encoded body (optional)

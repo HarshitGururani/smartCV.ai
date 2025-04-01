@@ -4,7 +4,6 @@ import { clerkClient } from "@clerk/express";
 import prisma from "../primsa";
 import { extractAuth, generateUniqueId } from "../lib/helper";
 import { validateRequest } from "../middlewares/validateRequest";
-import { UpdateSchema } from "../validations/Document.schema";
 import { Prisma } from "@prisma/client";
 
 const router = express.Router();

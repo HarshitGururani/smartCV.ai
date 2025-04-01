@@ -21,6 +21,10 @@ app.use(
 );
 app.use(clerkMiddleware());
 
+app.get("/", async (req: Request, res: Response) => {
+  res.status(200).json({ message: "test data" });
+});
+
 app.use("/api/document", documentRoute);
 
 app.get("/", validateRequest, (req: Request, res: Response) => {

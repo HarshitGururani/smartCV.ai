@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 
 import { clerkClient } from "@clerk/express";
-import prisma from "../../primsa";
+import prisma from "../primsa";
 import { extractAuth, generateUniqueId } from "../lib/helper";
 import { validateRequest } from "../middlewares/validateRequest";
 import { UpdateSchema } from "../validations/Document.schema";

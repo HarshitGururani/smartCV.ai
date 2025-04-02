@@ -92,7 +92,7 @@ export const getDocumentById = async (
         },
       }
     );
-    console.log(response.data);
+    console.log("apiClient" + response.data);
 
     return response.data;
   } catch (error: unknown) {

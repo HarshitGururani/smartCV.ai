@@ -1,11 +1,10 @@
 import { ResumeDataType } from "@/types/document-types";
 import axios from "axios";
-import Cookies from "js-cookie"; // Import the js-cookie library
 
-// Function to get the Clerk JWT from cookies
-const getClerkToken = (): string | null => {
-  return Cookies.get("__clerk_db_jwt") || null; // Adjust cookie name if necessary
-};
+// // Function to get the Clerk JWT from cookies
+// const getClerkToken = (): string | null => {
+//   return Cookies.get("__clerk_db_jwt") || null; // Adjust cookie name if necessary
+// };
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 //create documents
@@ -37,19 +36,15 @@ export const createDocument = async (documentData: ResumeDataType) => {
 };
 
 //fetch all documents
-export const fetchAllDocuments = async () => {
+export const fetchAllDocuments = async (token: string | null) => {
   try {
-    const clerkToken = getClerkToken();
-
-    // If no token is found, throw an error or handle it as needed
-    if (!clerkToken) {
+    if (!token)
       throw new Error("No Clerk token found. User is not authenticated.");
-    }
 
     const response = await axios.get(`${API_BASE_URL}/api/document/all`, {
       withCredentials: true,
       headers: {
-        Authorization: `Bearer ${clerkToken}`, // Include the Clerk token in the Authorization header
+        Authorization: `Bearer ${token}`, // Include the Clerk token in the Authorization header
       },
     });
     console.log(response.data);

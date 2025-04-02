@@ -39,7 +39,8 @@ export const ResumeInfoProvider = ({
     console.log(`resume info context:" ${documentData}`);
 
     setResumeInfo(documentData);
-  }, [data, isSuccess]);
+  }, []);
+
   const onUpdate = (data: ResumeDataType) => {
     setResumeInfo(data);
   };

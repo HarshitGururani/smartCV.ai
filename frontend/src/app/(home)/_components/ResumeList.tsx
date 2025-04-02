@@ -3,11 +3,9 @@ import useGetDocuments from "@/app/mutations/use-get-documents";
 import { DocumentTypes } from "@/types/document-types";
 import { Loader2, RotateCw } from "lucide-react";
 import ResumeItem from "./ResumeItem";
-import { useAuth } from "@clerk/nextjs";
 
 const ResumeList = () => {
-  const { getToken } = useAuth();
-  const { data, isLoading, isError, refetch } = useGetDocuments(getToken);
+  const { data, isLoading, isError, refetch } = useGetDocuments();
 
   const resumes: DocumentTypes[] = data?.documents ?? [];
 

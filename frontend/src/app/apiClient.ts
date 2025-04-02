@@ -8,12 +8,20 @@ import axios from "axios";
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 //create documents
-export const createDocument = async (documentData: ResumeDataType) => {
+export const createDocument = async (
+  documentData: ResumeDataType,
+  token: string | null
+) => {
   try {
     const response = await axios.post(
       `${API_BASE_URL}/api/document/create`,
       documentData,
-      { withCredentials: true }
+      {
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`, // Include the Clerk token in the Authorization header
+        },
+      }
     );
     return response.data;
   } catch (error: unknown) {

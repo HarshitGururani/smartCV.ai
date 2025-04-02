@@ -1,8 +1,10 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
 import * as apiClient from "../apiClient";
-const useGetDocuments = (getToken) => {
+import { useAuth } from "@clerk/nextjs";
+const useGetDocuments = () => {
   const queryKey = ["documents"];
+  const { getToken } = useAuth();
   const query = useQuery({
     queryKey,
     queryFn: async () => {

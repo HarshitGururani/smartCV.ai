@@ -98,6 +98,7 @@ router.get("/:documentId", validateRequest_1.validateRequest, (req, res) => __aw
                 skills: true,
             },
         });
+        console.log(documentData);
         res.status(200).json({ success: true, data: documentData });
     }
     catch (error) {
@@ -111,109 +112,159 @@ router.get("/:documentId", validateRequest_1.validateRequest, (req, res) => __aw
 router.patch("/updated/:documentId", validateRequest_1.validateRequest, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { documentId } = req.params;
-        const { title, status, summary, themeColor, currentPosition, personalInfo, experience, education, skills, thumbnail, } = req.body;
-        console.log(education);
-        const userId = (0, helper_1.extractAuth)(req).userId;
+        // Make sure documentId is present in params
         if (!documentId) {
             res.status(400).json({ error: "DocumentId is required" });
+            return;
         }
-        yield primsa_1.default.$transaction((trx) => __awaiter(void 0, void 0, void 0, function* () {
-            const existingDocument = yield primsa_1.default.document.findUnique({
-                where: {
-                    documentId,
-                    userId,
-                },
-            });
-            if (!existingDocument) {
-                return res.status(400).json({ error: "document not found" });
-            }
-            const resumeUpdate = {};
-            if (title)
-                resumeUpdate.title = title;
-            if (thumbnail)
-                resumeUpdate.thumbnail = thumbnail;
-            if (summary)
-                resumeUpdate.summary = summary;
-            if (themeColor)
-                resumeUpdate.themeColor = themeColor;
-            if (status)
-                resumeUpdate.status = status;
-            if (currentPosition)
-                resumeUpdate.currentPosition = currentPosition || 1;
-            const documentData = yield trx.document.update({
-                where: {
-                    userId,
-                    documentId,
-                },
-                data: resumeUpdate,
-            });
-            if (!documentData) {
-                return res.status(400).json({ error: "Failed to update document" });
-            }
-            if (personalInfo) {
-                if (!personalInfo.firstName && !personalInfo.lastName) {
+        // Extract userId from auth and check it
+        const userId = (0, helper_1.extractAuth)(req).userId;
+        if (!userId) {
+            res.status(401).json({ error: "Unauthorized: Missing userId" });
+            return;
+        }
+        const { title, status, summary, themeColor, currentPosition, personalInfo, experience, education, skills, thumbnail, } = req.body;
+        // Log education for debugging
+        console.log(education);
+        // Simple flag to track if response has been sent
+        let responseSent = false;
+        try {
+            // Start transaction
+            yield primsa_1.default.$transaction((trx) => __awaiter(void 0, void 0, void 0, function* () {
+                const existingDocument = yield trx.document.findUnique({
+                    where: {
+                        documentId,
+                        userId,
+                    },
+                });
+                if (!existingDocument) {
+                    res.status(400).json({ error: "Document not found" });
+                    responseSent = true;
                     return;
                 }
-                const { docId: _ } = personalInfo, cleanPersonal = __rest(personalInfo, ["docId"]);
-                yield trx.personalInfo.upsert({
-                    where: { docId: existingDocument.id },
-                    update: personalInfo,
-                    create: Object.assign({ docId: existingDocument.id }, cleanPersonal),
+                // Prepare the data for updating the document
+                const resumeUpdate = {};
+                if (title)
+                    resumeUpdate.title = title;
+                if (thumbnail)
+                    resumeUpdate.thumbnail = thumbnail;
+                if (summary)
+                    resumeUpdate.summary = summary;
+                if (themeColor)
+                    resumeUpdate.themeColor = themeColor;
+                if (status)
+                    resumeUpdate.status = status;
+                if (currentPosition)
+                    resumeUpdate.currentPosition = currentPosition || 1;
+                // Update document data
+                const documentData = yield trx.document.update({
+                    where: {
+                        userId,
+                        documentId,
+                    },
+                    data: resumeUpdate,
+                });
+                if (!documentData) {
+                    res.status(400).json({ error: "Failed to update document" });
+                    responseSent = true;
+                    return;
+                }
+                // Update personalInfo if present
+                if (personalInfo) {
+                    if (!personalInfo.firstName && !personalInfo.lastName) {
+                        // If both firstName and lastName are missing, skip update
+                        res.status(400).json({
+                            error: "Personal info must contain either firstName or lastName",
+                        });
+                        responseSent = true;
+                        return;
+                    }
+                    const { docId: _ } = personalInfo, cleanPersonal = __rest(personalInfo, ["docId"]);
+                    yield trx.personalInfo.upsert({
+                        where: { docId: existingDocument.id },
+                        update: personalInfo,
+                        create: Object.assign({ docId: existingDocument.id }, cleanPersonal),
+                    });
+                }
+                // Handle experience updates
+                if (experience === null || experience === void 0 ? void 0 : experience.length) {
+                    yield Promise.all(experience.map((exp) => __awaiter(void 0, void 0, void 0, function* () {
+                        var _a;
+                        const { docId: _ } = exp, cleanExp = __rest(exp, ["docId"]);
+                        yield trx.experience.upsert({
+                            where: { id: (_a = cleanExp.id) !== null && _a !== void 0 ? _a : 0, docId: existingDocument.id },
+                            update: Object.assign(Object.assign({}, exp), { startDate: cleanExp.startDate
+                                    ? new Date(cleanExp.startDate)
+                                    : null, endDate: cleanExp.endDate
+                                    ? new Date(cleanExp.endDate)
+                                    : null }),
+                            create: Object.assign(Object.assign({ docId: existingDocument.id }, cleanExp), { startDate: cleanExp.startDate
+                                    ? new Date(cleanExp.startDate)
+                                    : null, endDate: cleanExp.endDate
+                                    ? new Date(cleanExp.endDate)
+                                    : null }),
+                        });
+                    })));
+                }
+                // Handle education updates
+                if (education === null || education === void 0 ? void 0 : education.length) {
+                    yield Promise.all(education.map((edu) => __awaiter(void 0, void 0, void 0, function* () {
+                        var _a;
+                        const { docId: _ } = edu, cleanEdu = __rest(edu, ["docId"]);
+                        yield trx.education.upsert({
+                            where: { id: (_a = cleanEdu.id) !== null && _a !== void 0 ? _a : 0, docId: existingDocument.id },
+                            update: Object.assign(Object.assign({}, edu), { startDate: cleanEdu.startDate
+                                    ? new Date(cleanEdu.startDate)
+                                    : null, endDate: cleanEdu.endDate
+                                    ? new Date(cleanEdu.endDate)
+                                    : null }),
+                            create: Object.assign(Object.assign({ docId: existingDocument.id }, cleanEdu), { startDate: cleanEdu.startDate
+                                    ? new Date(cleanEdu.startDate)
+                                    : null, endDate: cleanEdu.endDate
+                                    ? new Date(cleanEdu.endDate)
+                                    : null }),
+                        });
+                    })));
+                }
+                // Handle skill updates
+                if (skills && Array.isArray(skills)) {
+                    yield Promise.all(skills.map((skill) => __awaiter(void 0, void 0, void 0, function* () {
+                        var _a;
+                        const { docId: _ } = skill, cleanSkill = __rest(skill, ["docId"]);
+                        yield trx.skill.upsert({
+                            where: { id: (_a = cleanSkill.id) !== null && _a !== void 0 ? _a : 0, docId: existingDocument.id },
+                            update: cleanSkill,
+                            create: Object.assign({ docId: existingDocument.id }, cleanSkill),
+                        });
+                    })));
+                }
+            }));
+            // Send success response only if we haven't sent an error response yet
+            if (!responseSent) {
+                res.status(200).json({
+                    success: true,
+                    message: "Document updated successfully",
                 });
             }
-            if (experience === null || experience === void 0 ? void 0 : experience.length) {
-                yield Promise.all(experience.map((exp) => __awaiter(void 0, void 0, void 0, function* () {
-                    var _a;
-                    const { docId: _ } = exp, cleanExp = __rest(exp, ["docId"]);
-                    yield trx.experience.upsert({
-                        where: { id: (_a = cleanExp.id) !== null && _a !== void 0 ? _a : 0, docId: existingDocument.id },
-                        update: Object.assign(Object.assign({}, exp), { startDate: cleanExp.startDate
-                                ? new Date(cleanExp.startDate)
-                                : null, endDate: cleanExp.endDate ? new Date(cleanExp.endDate) : null }),
-                        create: Object.assign(Object.assign({ docId: existingDocument.id }, cleanExp), { startDate: cleanExp.startDate
-                                ? new Date(cleanExp.startDate)
-                                : null, endDate: cleanExp.endDate ? new Date(cleanExp.endDate) : null }),
-                    });
-                })));
+        }
+        catch (transactionError) {
+            // Only send error response if we haven't sent one already
+            if (!responseSent) {
+                console.error("Transaction error:", transactionError);
+                res.status(500).json({
+                    success: false,
+                    message: "Transaction failed",
+                    error: transactionError.message || transactionError,
+                });
             }
-            if (education === null || education === void 0 ? void 0 : education.length) {
-                yield Promise.all(education.map((edu) => __awaiter(void 0, void 0, void 0, function* () {
-                    var _a;
-                    const { docId: _ } = edu, cleanEdu = __rest(edu, ["docId"]);
-                    yield trx.education.upsert({
-                        where: { id: (_a = cleanEdu.id) !== null && _a !== void 0 ? _a : 0, docId: existingDocument.id },
-                        update: Object.assign(Object.assign({}, edu), { startDate: cleanEdu.startDate
-                                ? new Date(cleanEdu.startDate)
-                                : null, endDate: cleanEdu.endDate ? new Date(cleanEdu.endDate) : null }),
-                        create: Object.assign(Object.assign({ docId: existingDocument.id }, cleanEdu), { startDate: cleanEdu.startDate
-                                ? new Date(cleanEdu.startDate)
-                                : null, endDate: cleanEdu.endDate ? new Date(cleanEdu.endDate) : null }),
-                    });
-                })));
-            }
-            if (skills && Array.isArray(skills)) {
-                yield Promise.all(skills.map((skill) => __awaiter(void 0, void 0, void 0, function* () {
-                    var _a;
-                    const { docId: _ } = skill, cleanSkill = __rest(skill, ["docId"]);
-                    yield trx.skill.upsert({
-                        where: { id: (_a = cleanSkill.id) !== null && _a !== void 0 ? _a : 0, docId: existingDocument.id },
-                        update: cleanSkill,
-                        create: Object.assign({ docId: existingDocument.id }, cleanSkill),
-                    });
-                })));
-            }
-            return res.status(200).json({
-                success: true,
-                message: "Document updated successfully",
-            });
-        }));
+        }
     }
     catch (error) {
-        console.log(error.stack);
+        console.error(error.stack);
         res.status(500).json({
             success: false,
             message: "Failed to update document",
-            error: error,
+            error: error.message || error,
         });
     }
 }));

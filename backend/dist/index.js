@@ -29,15 +29,22 @@ app.use((0, cors_1.default)({
     origin: allowedOrigins,
     credentials: true,
 }));
-app.use((0, express_2.clerkMiddleware)());
+app.use((0, express_2.clerkMiddleware)({
+    authorizedParties: ["https://smart-cv-ai-pi.vercel.app"],
+    jwtKey: process.env.CLERK_JWT_PUBLIC_KEY,
+}));
+app.use((req, res, next) => {
+    console.log("Request Headers:", req.headers);
+    next();
+});
 app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.status(200).json({ message: "test data" });
 }));
-app.use("/api/document", document_1.default);
-app.get("/", validateRequest_1.validateRequest, (req, res) => {
+app.get("/test", validateRequest_1.validateRequest, (req, res) => {
     const auth = req.auth;
     res.status(200).json({ message: auth });
 });
+app.use("/api/document", document_1.default);
 app.listen(5000, () => {
     console.log(`Server running on port 5000`);
 });

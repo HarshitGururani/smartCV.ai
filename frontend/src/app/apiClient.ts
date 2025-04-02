@@ -18,6 +18,7 @@ export const createDocument = async (
       documentData,
       {
         withCredentials: true,
+
         headers: {
           Authorization: `Bearer ${token}`, // Include the Clerk token in the Authorization header
         },

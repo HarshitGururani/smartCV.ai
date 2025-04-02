@@ -77,12 +77,18 @@ export const fetchAllDocuments = async (token: string | null) => {
 };
 
 //fetch document by id
-export const getDocumentById = async (documentId: string) => {
+export const getDocumentById = async (
+  documentId: string,
+  token: string | null
+) => {
   try {
     const response = await axios.get(
       `${API_BASE_URL}/api/document/${documentId}`,
       {
         withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`, // Include the Clerk token in the Authorization header
+        },
       }
     );
 
@@ -109,7 +115,8 @@ export const getDocumentById = async (documentId: string) => {
 //update document
 export const updateDocument = async (
   documentData: ResumeDataType,
-  documentId: string
+  documentId: string,
+  token: string | null
 ) => {
   try {
     const response = await axios.patch(
@@ -117,6 +124,9 @@ export const updateDocument = async (
       documentData,
       {
         withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`, // Include the Clerk token in the Authorization header
+        },
       }
     );
     return response.data;

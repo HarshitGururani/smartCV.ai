@@ -9,7 +9,7 @@ export const validateRequest = (
   const auth = getAuth(req);
 
   if (!auth.sessionId) {
-    res.status(401).json({ message: "Unauthorized" });
+    res.status(401).json({ message: "Unauth`orized" });
     return;
   }
 

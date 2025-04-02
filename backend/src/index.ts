@@ -11,36 +11,35 @@ app.use(express.urlencoded({ extended: true })); // Parse URL-encoded body (opti
 const allowedOrigins = [
   "http://localhost:3000", // Local frontend
   "https://smart-cv-ai-pi.vercel.app", // Production frontend
-  "https://smartcvai-production.up.railway.app",
 ];
-
 app.use(
   cors({
     origin: allowedOrigins,
     credentials: true,
   })
 );
-// Update your Clerk middleware with authorizedParties
+
 app.use(
   clerkMiddleware({
-    authorizedParties: [
-      "https://smart-cv-ai-pi.vercel.app", // Production frontend
-      "https://smartcvai-production.up.railway.app",
-    ],
+    authorizedParties: ["https://smart-cv-ai-pi.vercel.app"],
+    jwtKey: process.env.CLERK_JWT_PUBLIC_KEY,
   })
 );
+app.use((req, res, next) => {
+  console.log("Request Headers:", req.headers);
+  next();
+});
 
 app.get("/", async (req: Request, res: Response) => {
   res.status(200).json({ message: "test data" });
 });
-
-app.use("/api/document", documentRoute);
-
-app.get("/", validateRequest, (req: Request, res: Response) => {
+app.get("/test", validateRequest, (req: Request, res: Response) => {
   const auth = (req as Request & { auth: AuthObject }).auth;
 
   res.status(200).json({ message: auth });
 });
+
+app.use("/api/document", documentRoute);
 
 app.listen(5000, () => {
   console.log(`Server running on port 5000`);

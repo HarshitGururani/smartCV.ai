@@ -83,6 +83,7 @@ router.get(
           skills: true,
         },
       });
+      console.log(documentData);
 
       res.status(200).json({ success: true, data: documentData });
     } catch (error) {

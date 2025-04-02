@@ -11,7 +11,7 @@ const useGetDocumentById = (documentId: string) => {
       apiClient.getDocumentById(documentId, token);
     },
     retry: 3,
-    // enabled: !documentId,
+    enabled: !!documentId, // Only run query when documentId is available
   });
 
   return query;

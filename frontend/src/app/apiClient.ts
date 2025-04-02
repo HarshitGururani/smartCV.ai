@@ -6,6 +6,10 @@ import axios from "axios";
 //   return Cookies.get("__clerk_db_jwt") || null; // Adjust cookie name if necessary
 // };
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+type ApiResponse = {
+  success: boolean;
+  data: ResumeDataType;
+};
 
 //create documents
 export const createDocument = async (
@@ -81,7 +85,7 @@ export const fetchAllDocuments = async (token: string | null) => {
 export const getDocumentById = async (
   documentId: string,
   token: string | null
-) => {
+): Promise<ApiResponse> => {
   try {
     const response = await axios.get(
       `${API_BASE_URL}/api/document/${documentId}`,

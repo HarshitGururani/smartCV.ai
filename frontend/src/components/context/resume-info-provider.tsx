@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 
 type ResumeContextType = {
-  resumeInfo: ResumeDataType | undefined;
+  resumeInfo: ResumeDataType | null;
   onUpdate: (data: ResumeDataType) => void;
   isLoading: boolean;
   isError: boolean;
@@ -23,27 +23,27 @@ export const ResumeInfoProvider = ({
   children: React.ReactNode;
 }) => {
   const params = useParams();
-
   const documentId = params.documentId as string;
 
   const { data, isError, isLoading, refetch, isSuccess } =
     useGetDocumentById(documentId);
 
-  console.log(`Resume Info ${data}`);
+  console.log("Resume Info:", data);
 
-  const [resumeInfo, setResumeInfo] = useState<ResumeDataType>();
+  const [resumeInfo, setResumeInfo] = useState<ResumeDataType | null>(null);
 
   useEffect(() => {
     if (!data) return;
-    const { data: documentData } = data;
-    console.log(`resume info context:" ${documentData}`);
 
-    setResumeInfo(documentData);
-  }, []);
+    console.log("Setting Resume Info:", data);
 
-  const onUpdate = (data: ResumeDataType) => {
     setResumeInfo(data);
+  }, [data]);
+
+  const onUpdate = (newData: ResumeDataType) => {
+    setResumeInfo((prev) => (prev ? { ...prev, ...newData } : newData));
   };
+
   return (
     <ResumeInfoContext.Provider
       value={{ resumeInfo, onUpdate, isError, isLoading, isSuccess, refetch }}

@@ -32,12 +32,11 @@ export const ResumeInfoProvider = ({
   const [resumeInfo, setResumeInfo] = useState<ResumeDataType>();
 
   useEffect(() => {
-    if (data && isSuccess) {
-      const { data: documentData } = data;
-      console.log(documentData);
+    if (!data) return;
+    const { data: documentData } = data;
+    console.log("resume info context" + documentData);
 
-      setResumeInfo(documentData);
-    }
+    setResumeInfo(documentData);
   }, [data, isSuccess]);
   const onUpdate = (data: ResumeDataType) => {
     setResumeInfo(data);

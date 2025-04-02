@@ -85,7 +85,7 @@ router.get(
       });
       console.log(documentData);
 
-      res.status(200).json({ success: true, data: documentData });
+      res.status(200).json({ success: true, document: documentData });
     } catch (error) {
       res.status(500).json({
         success: false,

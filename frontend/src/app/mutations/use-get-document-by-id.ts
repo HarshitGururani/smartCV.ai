@@ -8,7 +8,7 @@ const useGetDocumentById = (documentId: string) => {
     queryFn: async () => {
       const token = await getToken();
       if (!token) throw new Error("Unauthorized: No token received");
-      apiClient.getDocumentById(documentId, token);
+      return apiClient.getDocumentById(documentId, token);
     },
     retry: 3,
     enabled: !!documentId, // Only run query when documentId is available

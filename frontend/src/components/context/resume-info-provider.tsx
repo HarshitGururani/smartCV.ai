@@ -34,6 +34,8 @@ export const ResumeInfoProvider = ({
   useEffect(() => {
     if (data && isSuccess) {
       const { data: documentData } = data;
+      console.log(documentData);
+
       setResumeInfo(documentData);
     }
   }, [data, isSuccess]);

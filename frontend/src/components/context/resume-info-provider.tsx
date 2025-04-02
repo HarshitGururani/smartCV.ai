@@ -29,8 +29,10 @@ export const ResumeInfoProvider: FC<{
   const [resumeInfo, setResumeInfo] = useState<ResumeDataType>();
 
   useEffect(() => {
-    if (isSuccess) setResumeInfo(data?.document);
-  }, [data?.document, isSuccess]);
+    if (isSuccess && data) {
+      setResumeInfo(data?.document); // Ensure `data.document` exists
+    }
+  }, [data, isSuccess]);
 
   const onUpdate = (data: ResumeDataType) => {
     setResumeInfo(data);

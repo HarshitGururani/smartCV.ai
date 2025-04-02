@@ -29,12 +29,14 @@ export const ResumeInfoProvider = ({
   const { data, isError, isLoading, refetch, isSuccess } =
     useGetDocumentById(documentId);
 
+  console.log(`Resume Info ${data}`);
+
   const [resumeInfo, setResumeInfo] = useState<ResumeDataType>();
 
   useEffect(() => {
     if (!data) return;
     const { data: documentData } = data;
-    console.log("resume info context" + documentData);
+    console.log(`resume info context:" ${documentData}`);
 
     setResumeInfo(documentData);
   }, [data, isSuccess]);

@@ -21,14 +21,13 @@ app.use(
 
 app.use(
   clerkMiddleware({
-    authorizedParties: ["https://smart-cv-ai-pi.vercel.app"],
+    authorizedParties: [
+      "https://smart-cv-ai-pi.vercel.app",
+      "http://localhost:3000",
+    ],
     jwtKey: process.env.CLERK_JWT_PUBLIC_KEY,
   })
 );
-app.use((req, res, next) => {
-  console.log("Request Headers:", req.headers);
-  next();
-});
 
 app.get("/", async (req: Request, res: Response) => {
   res.status(200).json({ message: "test data" });

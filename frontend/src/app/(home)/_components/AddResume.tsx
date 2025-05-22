@@ -33,7 +33,7 @@ const AddResume = () => {
         role="button"
         onClick={onCreate}
       >
-        <div className=" py-24 h-[183px] flex flex-col rounded-lg gap-2 w-full max-w-full items-center justify-center border bg-white hover:bg-primary transition-colors hover:shadow dark:bg-secondary hover:text-white">
+        <div className="py-24 h-[183px] flex flex-col rounded-lg gap-2 w-full max-w-full items-center justify-center border bg-white hover:bg-primary transition-colors hover:shadow dark:bg-secondary hover:text-white">
           <span>
             <PlusIcon size={"30px"} />
           </span>

@@ -11,7 +11,7 @@ const page = () => {
             <h1 className="text-6xl font-bold">
               <p>Get dream job with our</p>
               <p>
-                <span className="bg-gradient-to-r from-primary via-purple-300 to-primary bg-clip-text text-transparent animate-sparkle">
+                <span className="bg-gradient-to-r from-primary via-purple-300 to-primary bg-clip-text text-transparent">
                   AI Powered
                 </span>
                 {"  "}
@@ -19,7 +19,8 @@ const page = () => {
               </p>
             </h1>
             <p className=" block text-xl mt-3 font-medium text-black/70">
-              Build a professional,resume with our free builder, and download it
+              Build a professional, resume with our free builder, and download
+              it
             </p>
             <br />
             <div className="flex items-center gap-2">

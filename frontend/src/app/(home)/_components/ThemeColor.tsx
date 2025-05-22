@@ -82,7 +82,7 @@ const ThemeColor = () => {
     } catch (error) {
       console.error("Mutation error:", error);
     }
-  }, [selectedColor]);
+  }, [mutateAsync, selectedColor]);
 
   return (
     <div>

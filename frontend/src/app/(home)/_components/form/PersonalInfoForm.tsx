@@ -46,7 +46,7 @@ const PersonalInfoForm = ({ handleNext }: PersonalInfoForm) => {
     (e: { target: { name: string; value: string } }) => {
       const { name, value } = e.target;
 
-      //this because experienced list is an object so we can directly do this
+      //this because personalInfo list is an object so we can directly do this
       setPersonalInfo({
         ...personalInfo,
         [name]: value,

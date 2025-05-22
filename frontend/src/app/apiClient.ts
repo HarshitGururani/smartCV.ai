@@ -1,10 +1,6 @@
 import { ResumeDataType } from "@/types/document-types";
 import axios from "axios";
 
-// // Function to get the Clerk JWT from cookies
-// const getClerkToken = (): string | null => {
-//   return Cookies.get("__clerk_db_jwt") || null; // Adjust cookie name if necessary
-// };
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 //create documents
